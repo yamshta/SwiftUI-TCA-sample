@@ -12,7 +12,19 @@
 		77CCCD14281E2B5400399FC4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 77CCCD13281E2B5400399FC4 /* Assets.xcassets */; };
 		77CCCD17281E2B5400399FC4 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 77CCCD16281E2B5400399FC4 /* Preview Assets.xcassets */; };
 		77CCCD1F281E2CDB00399FC4 /* ComposableArchitecture in Frameworks */ = {isa = PBXBuildFile; productRef = 77CCCD1E281E2CDB00399FC4 /* ComposableArchitecture */; };
+		77CCCD29281E9C5C00399FC4 /* SwiftUI_TCA_sampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77CCCD28281E9C5C00399FC4 /* SwiftUI_TCA_sampleTests.swift */; };
+		77CCCD30281E9C6D00399FC4 /* TodosTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77CCCD2F281E9C6D00399FC4 /* TodosTests.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		77CCCD2A281E9C5C00399FC4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 77CCCD04281E2B5300399FC4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 77CCCD0B281E2B5300399FC4;
+			remoteInfo = "SwiftUI-TCA-sample";
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		77CCCD0C281E2B5300399FC4 /* SwiftUI-TCA-sample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "SwiftUI-TCA-sample.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -20,6 +32,9 @@
 		77CCCD11281E2B5300399FC4 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		77CCCD13281E2B5400399FC4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		77CCCD16281E2B5400399FC4 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		77CCCD26281E9C5C00399FC4 /* SwiftUI-TCA-sampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SwiftUI-TCA-sampleTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		77CCCD28281E9C5C00399FC4 /* SwiftUI_TCA_sampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUI_TCA_sampleTests.swift; sourceTree = "<group>"; };
+		77CCCD2F281E9C6D00399FC4 /* TodosTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodosTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,6 +46,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		77CCCD23281E9C5C00399FC4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -38,6 +60,7 @@
 			isa = PBXGroup;
 			children = (
 				77CCCD0E281E2B5300399FC4 /* SwiftUI-TCA-sample */,
+				77CCCD27281E9C5C00399FC4 /* SwiftUI-TCA-sampleTests */,
 				77CCCD0D281E2B5300399FC4 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -46,6 +69,7 @@
 			isa = PBXGroup;
 			children = (
 				77CCCD0C281E2B5300399FC4 /* SwiftUI-TCA-sample.app */,
+				77CCCD26281E9C5C00399FC4 /* SwiftUI-TCA-sampleTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -67,6 +91,15 @@
 				77CCCD16281E2B5400399FC4 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		77CCCD27281E9C5C00399FC4 /* SwiftUI-TCA-sampleTests */ = {
+			isa = PBXGroup;
+			children = (
+				77CCCD28281E9C5C00399FC4 /* SwiftUI_TCA_sampleTests.swift */,
+				77CCCD2F281E9C6D00399FC4 /* TodosTests.swift */,
+			);
+			path = "SwiftUI-TCA-sampleTests";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -92,6 +125,24 @@
 			productReference = 77CCCD0C281E2B5300399FC4 /* SwiftUI-TCA-sample.app */;
 			productType = "com.apple.product-type.application";
 		};
+		77CCCD25281E9C5C00399FC4 /* SwiftUI-TCA-sampleTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 77CCCD2C281E9C5C00399FC4 /* Build configuration list for PBXNativeTarget "SwiftUI-TCA-sampleTests" */;
+			buildPhases = (
+				77CCCD22281E9C5C00399FC4 /* Sources */,
+				77CCCD23281E9C5C00399FC4 /* Frameworks */,
+				77CCCD24281E9C5C00399FC4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				77CCCD2B281E9C5C00399FC4 /* PBXTargetDependency */,
+			);
+			name = "SwiftUI-TCA-sampleTests";
+			productName = "SwiftUI-TCA-sampleTests";
+			productReference = 77CCCD26281E9C5C00399FC4 /* SwiftUI-TCA-sampleTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -104,6 +155,10 @@
 				TargetAttributes = {
 					77CCCD0B281E2B5300399FC4 = {
 						CreatedOnToolsVersion = 13.3.1;
+					};
+					77CCCD25281E9C5C00399FC4 = {
+						CreatedOnToolsVersion = 13.3.1;
+						TestTargetID = 77CCCD0B281E2B5300399FC4;
 					};
 				};
 			};
@@ -124,6 +179,7 @@
 			projectRoot = "";
 			targets = (
 				77CCCD0B281E2B5300399FC4 /* SwiftUI-TCA-sample */,
+				77CCCD25281E9C5C00399FC4 /* SwiftUI-TCA-sampleTests */,
 			);
 		};
 /* End PBXProject section */
@@ -135,6 +191,13 @@
 			files = (
 				77CCCD17281E2B5400399FC4 /* Preview Assets.xcassets in Resources */,
 				77CCCD14281E2B5400399FC4 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		77CCCD24281E9C5C00399FC4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -150,7 +213,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		77CCCD22281E9C5C00399FC4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				77CCCD29281E9C5C00399FC4 /* SwiftUI_TCA_sampleTests.swift in Sources */,
+				77CCCD30281E9C6D00399FC4 /* TodosTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		77CCCD2B281E9C5C00399FC4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 77CCCD0B281E2B5300399FC4 /* SwiftUI-TCA-sample */;
+			targetProxy = 77CCCD2A281E9C5C00399FC4 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		77CCCD18281E2B5400399FC4 /* Debug */ = {
@@ -323,6 +403,40 @@
 			};
 			name = Release;
 		};
+		77CCCD2D281E9C5C00399FC4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.yamshta.SwiftUI-TCA-sampleTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SwiftUI-TCA-sample.app/SwiftUI-TCA-sample";
+			};
+			name = Debug;
+		};
+		77CCCD2E281E9C5C00399FC4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.yamshta.SwiftUI-TCA-sampleTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SwiftUI-TCA-sample.app/SwiftUI-TCA-sample";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -340,6 +454,15 @@
 			buildConfigurations = (
 				77CCCD1B281E2B5400399FC4 /* Debug */,
 				77CCCD1C281E2B5400399FC4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		77CCCD2C281E9C5C00399FC4 /* Build configuration list for PBXNativeTarget "SwiftUI-TCA-sampleTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				77CCCD2D281E9C5C00399FC4 /* Debug */,
+				77CCCD2E281E9C5C00399FC4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

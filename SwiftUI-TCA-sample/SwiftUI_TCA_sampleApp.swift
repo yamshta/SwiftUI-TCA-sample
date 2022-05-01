@@ -14,27 +14,9 @@ struct SwiftUI_TCA_sampleApp: App {
         WindowGroup {
             ContentView(
                 store: Store(
-                    initialState: AppState(
-                        todos:  [
-                            Todo(
-                                description: "Milk",
-                                id: UUID(),
-                                isComplete: false
-                            ),
-                            Todo(
-                                description: "Eggs",
-                                id: UUID(),
-                                isComplete: false
-                            ),
-                            Todo(
-                                description: "Hand Soap",
-                                id: UUID(),
-                                isComplete: true
-                            ),
-                        ]
-                    ),
+                    initialState: AppState(),
                     reducer: appReducer,
-                    environment: AppEnvironment()
+                    environment: AppEnvironment(uuid: UUID.init)
                 )
             )
         }

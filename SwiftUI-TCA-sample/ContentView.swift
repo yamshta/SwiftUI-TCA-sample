@@ -14,37 +14,7 @@ struct Todo: Equatable, Identifiable {
     var isComplete = false
 }
 
-struct AppState: Equatable {
-    var todos: [Todo]
-}
-
-enum AppAction {
-    case addButtonTapped
-    case todo(index: Int, action: TodoAction)
-}
-
-struct AppEnvironment {}
-
-let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
-    todoReducer.forEach(
-        state: \.todos,
-        action: /AppAction.todo(index:action:),
-        environment: { _ in TodoEnvironment() }
-    ),
-    Reducer { state, action, environment in
-        switch action {
-        case .addButtonTapped:
-            state.todos.insert(Todo(id: UUID()), at: 0)
-            return .none
-        case .todo:
-            return .none
-        }
-    }
-)
-
-// MARK: Todo
-
-enum TodoAction {
+enum TodoAction: Equatable {
     case checkboxTapped
     case textFieldChanged(String)
 }
@@ -56,11 +26,56 @@ let todoReducer = Reducer<Todo, TodoAction, TodoEnvironment> { state, action, en
     case .checkboxTapped:
         state.isComplete.toggle()
         return .none
-    case .textFieldChanged(let text):
+    case let .textFieldChanged(text):
         state.description = text
         return .none
     }
 }
+
+struct AppState: Equatable {
+    var todos: [Todo] = []
+}
+
+enum AppAction: Equatable {
+    case addButtonTapped
+    case todo(index: Int, action: TodoAction)
+    case todoDelayCompleted
+}
+
+struct AppEnvironment {
+    var uuid: () -> UUID
+}
+
+let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
+    todoReducer.forEach(
+        state: \.todos,
+        action: /AppAction.todo(index:action:),
+        environment: { _ in TodoEnvironment() }
+    ),
+    Reducer { state, action, environment in
+        switch action {
+        case .addButtonTapped:
+            state.todos.insert(Todo(id: environment.uuid()), at: 0)
+            return .none
+        case .todo(index: _, action: .checkboxTapped):
+            struct CancelDelayId: Hashable {}
+            return Effect(value: .todoDelayCompleted)
+                .delay(for: 1, scheduler: DispatchQueue.main)
+                .eraseToEffect()
+                .cancellable(id: CancelDelayId(), cancelInFlight: true)
+        case .todo:
+            return .none
+        case .todoDelayCompleted:
+            state.todos = state.todos
+                .enumerated()
+                .sorted { lhs, rhs in
+                    (!lhs.element.isComplete && rhs.element.isComplete || lhs.offset < rhs.offset)
+                }
+                .map(\.element)
+            return .none
+        }
+    }
+)
 
 struct ContentView: View {
     let store: Store<AppState, AppAction>
@@ -135,7 +150,7 @@ struct ContentView_Previews: PreviewProvider {
                     ]
                 ),
                 reducer: appReducer,
-                environment: AppEnvironment()
+                environment: AppEnvironment(uuid: UUID.init)
             )
         )
     }
