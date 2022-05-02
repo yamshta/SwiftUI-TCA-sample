@@ -8,38 +8,14 @@
 import SwiftUI
 import ComposableArchitecture
 
-struct Todo: Equatable, Identifiable {
-    var description = ""
-    let id: UUID
-    var isComplete = false
-}
-
-enum TodoAction: Equatable {
-    case checkboxTapped
-    case textFieldChanged(String)
-}
-
-struct TodoEnvironment {}
-
-let todoReducer = Reducer<Todo, TodoAction, TodoEnvironment> { state, action, environment in
-    switch action {
-    case .checkboxTapped:
-        state.isComplete.toggle()
-        return .none
-    case let .textFieldChanged(text):
-        state.description = text
-        return .none
-    }
-}
-
 struct AppState: Equatable {
-    var todos: [Todo] = []
+    var todos: IdentifiedArrayOf<Todo> = []
 }
 
 enum AppAction: Equatable {
-    case addButtonTapped
-    case todo(index: Int, action: TodoAction)
-    case todoDelayCompleted
+    case addTodoButtonTapped
+    case todo(id: Todo.ID, action: TodoAction)
+    case sortCompletedTodos
 }
 
 struct AppEnvironment {
@@ -50,36 +26,31 @@ struct AppEnvironment {
 let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
     todoReducer.forEach(
         state: \.todos,
-        action: /AppAction.todo(index:action:),
+        action: /AppAction.todo(id:action:),
         environment: { _ in TodoEnvironment() }
     ),
     Reducer { state, action, environment in
         switch action {
-        case .addButtonTapped:
+        case .addTodoButtonTapped:
             state.todos.insert(Todo(id: environment.uuid()), at: 0)
             return .none
-        case .todo(index: _, action: .checkboxTapped):
-            struct CancelDelayId: Hashable {}
-            return Effect(value: .todoDelayCompleted)
-                .debounce(id: CancelDelayId(), for: 1, scheduler: environment.mainQueue)
-//                .delay(for: 1, scheduler: DispatchQueue.main)
-//                .eraseToEffect()
-//                .cancellable(id: CancelDelayId(), cancelInFlight: true)
-        case .todo:
+
+        case .sortCompletedTodos:
+            state.todos.sort { $1.isComplete && !$0.isComplete }
             return .none
-        case .todoDelayCompleted:
-            state.todos = state.todos
-                .enumerated()
-                .sorted { lhs, rhs in
-                    (!lhs.element.isComplete && rhs.element.isComplete || lhs.offset < rhs.offset)
-                }
-                .map(\.element)
+
+        case .todo(id: _, action: .checkBoxToggled):
+            struct CancelDelayId: Hashable {}
+            return Effect(value: .sortCompletedTodos)
+                .debounce(id: CancelDelayId(), for: 1, scheduler: environment.mainQueue.animation())
+
+        case .todo:
             return .none
         }
     }
 )
 
-struct ContentView: View {
+struct TodosView: View {
     let store: Store<AppState, AppAction>
 
     var body: some View {
@@ -89,7 +60,7 @@ struct ContentView: View {
                     ForEachStore(
                         store.scope(
                             state: \.todos,
-                            action: AppAction.todo(index:action:)
+                            action: AppAction.todo(id:action:)
                         ),
                         content: TodoView.init(store:)
                     )
@@ -97,7 +68,7 @@ struct ContentView: View {
                 }
                 .navigationTitle("Todos")
                 .navigationBarItems(trailing: Button("Add") {
-                    viewStore.send(.addButtonTapped)
+                    viewStore.send(.addTodoButtonTapped)
                 })
             }
         }
@@ -105,32 +76,9 @@ struct ContentView: View {
     }
 }
 
-struct TodoView: View {
-    let store: Store<Todo, TodoAction>
-
-    var body: some View {
-        WithViewStore(store) { viewStore in
-            HStack {
-                Button(action: { viewStore.send(.checkboxTapped) }) {
-                    Image(systemName: viewStore.isComplete ? "checkmark.square" : "square")
-                }
-                .buttonStyle(PlainButtonStyle())
-
-                TextField(
-                    "Untitled Todo",
-                    text: viewStore.binding(
-                        get: { $0.description },
-                        send: { .textFieldChanged($0) }
-                    )
-                )
-            }
-            .foregroundColor(viewStore.isComplete ? .gray : nil)
-        }
-    }
-}
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(
+        TodosView(
             store: Store(
                 initialState: AppState(
                     todos:  [

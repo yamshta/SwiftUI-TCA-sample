@@ -12,7 +12,7 @@ import ComposableArchitecture
 struct SwiftUI_TCA_sampleApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView(
+            TodosView(
                 store: Store(
                     initialState: AppState(),
                     reducer: appReducer,

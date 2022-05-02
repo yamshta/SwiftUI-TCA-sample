@@ -12,130 +12,103 @@ import XCTest
 class TodosTests: XCTestCase {
     let scheduler = DispatchQueue.test
 
-    func testCompletingTodo() {
-        let store = TestStore(
-            initialState: AppState(
-                todos: [
-                    Todo(
-                        description: "Milk",
-                        id: UUID(uuidString: "00000000-0000-0000-0000-000000000000")!,
-                        isComplete: false
-                    )
-                ]
-            ),
-            reducer: appReducer,
-            environment: AppEnvironment(
-                mainQueue: scheduler.eraseToAnyScheduler(),
-                uuid:  UUID.init)
-        )
-
-        store.assert(
-            .send(.todo(index: 0, action: .checkboxTapped)) {
-                $0.todos[0].isComplete = true
-            },
-            .do {
-                self.scheduler.advance(by: 1)
-            },
-            .receive(.todoDelayCompleted)
-        )
-    }
-
     func testAddTodo() {
         let store = TestStore(
             initialState: AppState(),
             reducer: appReducer,
             environment: AppEnvironment(
                 mainQueue: scheduler.eraseToAnyScheduler(),
-                uuid: { UUID(uuidString: "DEADBEEF-DEAD-BEEF-DEAD-BEEFDEADBEEF")! }
+                uuid: UUID.incrementing
             )
         )
 
-        store.assert(
-            .send(.addButtonTapped) {
-                $0.todos = [
-                    Todo(
-                        description: "",
-                        id: UUID(uuidString: "DEADBEEF-DEAD-BEEF-DEAD-BEEFDEADBEEF")!,
-                        isComplete: false
-                    )
-                ]
-            }
-        )
+        store.send(.addTodoButtonTapped) {
+            $0.todos.insert(
+                Todo(
+                    description: "",
+                    id: UUID(uuidString: "00000000-0000-0000-0000-000000000000")!,
+                    isComplete: false
+                ),
+                at: 0
+            )
+        }
     }
 
-    func testTodoSorting() {
+    func testCompletingTodo() {
+        let state = AppState(
+            todos: [
+                Todo(
+                    description: "",
+                    id: UUID(uuidString: "00000000-0000-0000-0000-000000000000")!,
+                    isComplete: false
+                ),
+                Todo(
+                    description: "",
+                    id: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!,
+                    isComplete: false
+                ),
+            ]
+        )
+
         let store = TestStore(
-            initialState: AppState(
-                todos: [
-                    Todo(
-                        description: "Milk",
-                        id: UUID(uuidString: "00000000-0000-0000-0000-000000000000")!,
-                        isComplete: false
-                    ),
-                    Todo(
-                        description: "Eggs",
-                        id: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!,
-                        isComplete: false
-                    )
-                ]
-            ),
+            initialState: state,
             reducer: appReducer,
             environment: AppEnvironment(
                 mainQueue: scheduler.eraseToAnyScheduler(),
-                uuid: { fatalError("unimplemented") }
-            )
+                uuid:  UUID.init)
         )
 
-        store.assert(
-            .send(.todo(index: 0, action: .checkboxTapped)) {
-                $0.todos[0].isComplete = true
-            },
-            .do {
-                self.scheduler.advance(by: 1)
-            },
-            .receive(.todoDelayCompleted) {
-                $0.todos.swapAt(0, 1)
-            }
-        )
+        store.send(.todo(id: state.todos[0].id, action: .checkBoxToggled)) {
+            $0.todos[id: state.todos[0].id]?.isComplete = true
+        }
+
+        scheduler.advance(by: 1)
+
+        store.receive(.sortCompletedTodos) {
+            $0.todos = [
+                $0.todos[1],
+                $0.todos[0],
+            ]
+        }
     }
 
-    func testTodoSorting_Cancellation() {
-        let todos = [
-            Todo(
-                description: "Milk",
-                id: UUID(uuidString: "00000000-0000-0000-0000-000000000000")!,
-                isComplete: false
-            ),
-            Todo(
-                description: "Eggs",
-                id: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!,
-                isComplete: false
-            )
-        ]
+    func testCompleteTodoDebounces() {
+        let state = AppState(
+            todos: [
+                Todo(
+                    description: "Milk",
+                    id: UUID(uuidString: "00000000-0000-0000-0000-000000000000")!,
+                    isComplete: false
+                ),
+                Todo(
+                    description: "Eggs",
+                    id: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!,
+                    isComplete: false
+                )
+            ]
+        )
 
         let store = TestStore(
-            initialState: AppState(todos: todos),
+            initialState: state,
             reducer: appReducer,
             environment: AppEnvironment(
                 mainQueue: scheduler.eraseToAnyScheduler(),
-                uuid: { fatalError("unimplemented") }
+                uuid: UUID.incrementing
             )
         )
 
-        store.assert(
-            .send(.todo(index: 0, action: .checkboxTapped)) {
-                $0.todos[0].isComplete = true
-            },
-            .do {
-                self.scheduler.advance(by: 0.5)
-            },
-            .send(.todo(index: 0, action: .checkboxTapped)) {
-                $0.todos[0].isComplete = false
-            },
-            .do {
-                self.scheduler.advance(by: 1)
-            },
-            .receive(.todoDelayCompleted)
-        )
+        store.send(.todo(id: state.todos[0].id, action: .checkBoxToggled)) {
+            $0.todos[id: state.todos[0].id]?.isComplete = true
+        }
+
+        scheduler.advance(by: 0.5)
+
+        store.send(.todo(id: state.todos[0].id, action: .checkBoxToggled)) {
+            $0.todos[id: state.todos[0].id]?.isComplete = false
+        }
+
+        scheduler.advance(by: 1)
+
+        store.receive(.sortCompletedTodos)
     }
 }
