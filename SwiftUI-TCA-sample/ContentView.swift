@@ -43,6 +43,7 @@ enum AppAction: Equatable {
 }
 
 struct AppEnvironment {
+    var mainQueue: AnySchedulerOf<DispatchQueue>
     var uuid: () -> UUID
 }
 
@@ -60,9 +61,10 @@ let appReducer = Reducer<AppState, AppAction, AppEnvironment>.combine(
         case .todo(index: _, action: .checkboxTapped):
             struct CancelDelayId: Hashable {}
             return Effect(value: .todoDelayCompleted)
-                .delay(for: 1, scheduler: DispatchQueue.main)
-                .eraseToEffect()
-                .cancellable(id: CancelDelayId(), cancelInFlight: true)
+                .debounce(id: CancelDelayId(), for: 1, scheduler: environment.mainQueue)
+//                .delay(for: 1, scheduler: DispatchQueue.main)
+//                .eraseToEffect()
+//                .cancellable(id: CancelDelayId(), cancelInFlight: true)
         case .todo:
             return .none
         case .todoDelayCompleted:
@@ -150,7 +152,10 @@ struct ContentView_Previews: PreviewProvider {
                     ]
                 ),
                 reducer: appReducer,
-                environment: AppEnvironment(uuid: UUID.init)
+                environment: AppEnvironment(
+                    mainQueue: DispatchQueue.main.eraseToAnyScheduler(),
+                    uuid: UUID.init
+                )
             )
         )
     }

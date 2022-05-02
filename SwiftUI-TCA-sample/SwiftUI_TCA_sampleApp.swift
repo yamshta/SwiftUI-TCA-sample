@@ -16,7 +16,10 @@ struct SwiftUI_TCA_sampleApp: App {
                 store: Store(
                     initialState: AppState(),
                     reducer: appReducer,
-                    environment: AppEnvironment(uuid: UUID.init)
+                    environment: AppEnvironment(
+                        mainQueue: DispatchQueue.main.eraseToAnyScheduler(),
+                        uuid: UUID.init
+                    )
                 )
             )
         }
